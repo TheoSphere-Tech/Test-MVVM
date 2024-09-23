@@ -6,6 +6,7 @@ namespace Test_MVVM.Services
     {
         bool AddUser(User user);
         List<User> GetUsers();
+        bool DeleteUser(User user);
         event Action<User> UserAdded;
     }
 }

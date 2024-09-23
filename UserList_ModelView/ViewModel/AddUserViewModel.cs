@@ -12,26 +12,23 @@ using Test_MVVM.Services;
 
 namespace Test_MVVM.ViewModel
 {
-    public class AddUserViewModel : INotifyPropertyChanged
+    public class AddUserViewModel
     {
+        private IUserService _userService;
+        private MainViewModel _mainViewModel;
+
         public ICommand AddUserCommand { get; set; }
 
         public string? Name { get; set; }
         public string? Email { get; set; }
         public string? Surname { get; set; }
 
-        public AddUserViewModel() {
+        public AddUserViewModel(IUserService userService, MainViewModel mainViewModel) {
+            _userService = userService;
+            _mainViewModel = mainViewModel;
             AddUserCommand = new RelayCommand(AddUser, CanAddUser);
         }
 
-        private IUserService userService = new UserService();
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] string name = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-        private bool isUpdate = false;
 
         private bool CanAddUser(object obj)
         {
@@ -40,8 +37,8 @@ namespace Test_MVVM.ViewModel
 
         private void AddUser(object obj)
         {
-            userService.AddUser(new User() { Name = Name, Email = Email, Surname = Surname });
-            NotifyPropertyChanged("IsAddUser");
+            _userService.AddUser(new User() { Name = Name, Email = Email, Surname = Surname });
+            _mainViewModel.RefreshUsers();
         }
     }
 }

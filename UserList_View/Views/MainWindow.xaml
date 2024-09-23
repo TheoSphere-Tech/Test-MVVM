@@ -9,10 +9,10 @@
         Name="mainwindow">
 
     <Grid Background="White">
-        <Grid Grid.Row="1" Background="WhiteSmoke" Margin="25,40,25,15">
+        <Grid Background="WhiteSmoke" Margin="25,40,25,10">
             <TextBox Name="FilterTextBox" TextChanged="FilterTextBox_TextChanged" Height="30" Width="200" Margin="0,0,500,300"/>
             <Button Height="30" Width="100" Foreground="White" CommandParameter="{x:Reference Name=mainwindow}" Command="{Binding ShowWindowCommand}" Content="Add User" VerticalAlignment="Center" Padding="5" Margin="600,0,0,300" Background="DarkSlateBlue"/>
-            <ListView Name="UserList" Padding="0" ItemsSource="{Binding Users}" Margin="25,70,25,25">
+            <ListView Name="UserList" Padding="0" ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser, Mode=TwoWay}" Margin="25,70,25,35">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name"/>
@@ -21,6 +21,12 @@
                     </GridView>
                 </ListView.View>
             </ListView>
+            <Button Content="Delete User" 
+                    Command="{Binding DeleteUserCommand}"
+                    Height="25" Width="75"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Margin="0, 0, 25,5"/>
         </Grid>
     </Grid>
 </Window>

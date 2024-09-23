@@ -12,10 +12,20 @@ namespace Test_MVVM.ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        public List<User> Users { get; set; }
+        private ObservableCollection<User> _users;
+        public ObservableCollection<User> Users
+        {
+            get => _users;
+            set
+            {
+                _users = value;
+                NotifyPropertyChanged(nameof(Users));
+            }
+        }
 
         private readonly IWindowService _windowService;
 
+        // Notify of the changes when changed
         public event PropertyChangedEventHandler? PropertyChanged;
         private void NotifyPropertyChanged([CallerMemberName] string name = "")
         {
@@ -24,15 +34,36 @@ namespace Test_MVVM.ViewModel
         private bool isUpdate = false;
 
         public ICommand ShowWindowCommand { get; }
+        public ICommand DeleteUserCommand { get; }
+
+        private IUserService _userService;
 
         public MainViewModel(IWindowService windowService)
         {
             ShowWindowCommand = new RelayCommand(ShowWindow, CanShowWindow);
 
+            DeleteUserCommand = new RelayCommand(DeleteUser, CanDeleteUser);
+
             _windowService = windowService;
 
-            IUserService userService = new UserService();
-            Users = userService.GetUsers();
+            _userService = new UserService();
+            LoadUsers();
+        }
+
+        // Load users from the service and populate the ObservableCollection
+        private void LoadUsers()
+        {
+            Users = new ObservableCollection<User>(_userService.GetUsers());
+        }
+
+        // Method to refresh users after adding a new one
+        public void RefreshUsers()
+        {
+            Users.Clear();
+            foreach (var user in _userService.GetUsers())
+            {
+                Users.Add(user);
+            }
         }
 
         private bool CanShowWindow(object obj)
@@ -42,7 +73,29 @@ namespace Test_MVVM.ViewModel
 
         private void ShowWindow(object obj)
         {
-            _windowService.ShowAddUserWindow();
+            _windowService.ShowAddUserWindow(_userService, this);
+        }
+
+        private User _selectedUser;
+        public User SelectedUser
+        {
+            get { return _selectedUser; }
+            set
+            {
+                _selectedUser = value;
+                NotifyPropertyChanged(nameof(SelectedUser));
+            }
+        }
+
+        private void DeleteUser(object obj)
+        {
+            _userService.DeleteUser(SelectedUser);
+            Users.Remove(SelectedUser);
+            SelectedUser = null;
+        }
+        private bool CanDeleteUser(object obj)
+        {
+            return true;
         }
     }
 }

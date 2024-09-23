@@ -1,17 +1,16 @@
 ﻿using InterfaceView_ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
+using Test_MVVM.Services;
 using Test_MVVM.Views;
 
 public class WindowService : IWindowService
 {
-    public void ShowAddUserWindow()
+    public WindowService() {
+    }
+
+    public void ShowAddUserWindow(IUserService userService, object mainViewModel)
     {
-        AddUser addUserWin = new()
+        AddUser addUserWin = new(userService, mainViewModel)
         {
             Owner = Application.Current.MainWindow,
             WindowStartupLocation = WindowStartupLocation.CenterOwner

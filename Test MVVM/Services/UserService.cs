@@ -31,6 +31,23 @@ namespace Test_MVVM.Services
             }
         }
 
+        public bool DeleteUser(Models.User user)
+        {
+            try
+            {
+                using (var context = new TestUserListContext())
+                {
+                    context.Remove(user);
+                    context.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public List<Models.User> GetUsers()
         {
             try
